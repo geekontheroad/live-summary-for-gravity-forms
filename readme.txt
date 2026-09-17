@@ -1,144 +1,150 @@
 === Live Summary for Gravity Forms ===
 Contributors: geekontheroad
 Donate link: https://geekontheroad.com/donate
-Author URI: https://geekontheroad.com
-Tags: gravityforms, order-summary, live-summary, gravity-summary, gravity-forms
-Requires at least: 4.7
-Tested up to: 7.0
+Tags: gravity-forms, order-summary, order-form, form-preview, submission-preview
+Requires at least: 6.5
+Tested up to: 7.1
 Stable tag: 1.2.10
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-This simple and handy plugin will add a live summary next to any gravity form. No coding required. 
+Show a live summary or order preview next to any Gravity Form. Updates as users type. No coding required.
 
 == Description ==
 
-**This simple and free plugin helps you to easily add a live summary to any gravity forms. No coding required. Simply check the fields you want to see and save your form.**
+Long forms and order forms lose people. Live Summary for Gravity Forms shows users exactly what they have filled in, updating in real time as they go, so they can check their answers before they submit.
 
-[TRY DEMO HERE](https://gravitysummary.geekontheroad.com/) 
+Add a summary panel beside any Gravity Form in a few clicks. Tick the fields you want to include and the summary builds itself, including product lines, quantities and a running total.
 
-[GET PRO VERSION HERE](https://geekontheroad.com/live-summary-for-gravity-forms/) 
+[Try the live demo](https://gravitysummary.geekontheroad.com/?utm_source=wporg&utm_medium=readme&utm_campaign=demo)
 
+= What the free version gives you =
 
-= How to set it up =
+* A live summary panel beside any Gravity Form
+* Choose exactly which fields appear, per form
+* Updates instantly as people type and select
+* A running total on forms with product fields
+* Respects your form's conditional logic, so hidden fields drop out of the summary automatically
+* Works with every currency Gravity Forms supports
+* Built on the official Gravity Forms Add-On Framework
+* No coding required
 
-1. Install the plugin
-1. The plugin has its own settings page since v1.1. Find it under Form > Settings > Live Summary
-1. Switch on the "Turn on summary" checkbox. 
-1. Decide which fields to show in the summary by checking the checkbox in the field settings of each field that you want to show.
-1. Summary will now work
-1. Optional: Show a total at the bottom. This will automatically work if you add any product fields to the form. To turn this total off, simply go back to the settings page and toggle the switch that says "show total in summary"
-[screenshot section](https://wordpress.org/plugins/live-summary-for-gravity-forms/screenshots/)
+= Perfect for =
 
+* Order forms and product configurators
+* Quote and estimate requests
+* Booking and reservation forms
+* Long multi-page forms where people need to review their answers
+* Any form where mistakes are expensive
 
-> Conditional logic supported
+= Supported fields =
 
-= Currently the following field types are supported in the free version: =
+The free version supports Single Line Text, Paragraph Text, Drop Down, Number, Checkboxes, Radio Buttons, Name, Date, Time, Phone, Address, Website, Username, Email, Multi Select, Product, Total and Shipping.
 
-* Single Line Text
-* Paragraph Text
-* Drop Down
-* Number
-* Checkboxes
-* Radio Buttons
-* Name
-* Date
-* time
-* Phone
-* Address
-* Website
-* Username
-* Email
-* Multi Select
-* Product
-* Total
-* Shipping
+More field types are supported in the Pro version.
 
-= More fields are supported in the PRO version = 
+= Pro version =
 
+Pro turns the summary into a fully designed part of your form:
 
+* Style presets - Modern, Minimal, Receipt and Dark, plus your own saved presets
+* Full design control from the UI: fonts, colours, borders, spacing and shadows
+* Drag-and-drop field selector with reordering
+* The Live Summary field - place one or more summaries anywhere inside the form
+* {live_summary} merge tag for confirmations and notifications
+* Sticky summary that follows the user while scrolling
+* Mobile summary bar with a tap-to-open sheet
+* Collapsible page groups with edit links back to earlier steps
+* Grouped product table with a detailed product and options breakdown
+* Subtotal, tax, shipping, coupons and discounts
+* EU VAT support, including reverse charge
+* Works with GP eCommerce Fields, Jetsloth Image Choices, GravityView, Gravity PDF and Gravity Flow
+* Prefix and suffix per field, and FontAwesome icons
+* Copy settings between forms
+* 20+ developer hooks
 
-= PRO version =
-
-Currently available PRO features are:
-
-* NEW: Added new setting for choice fields (radio, select, checkboxes) which allows you to display the choice label instead of its value
-* NEW: Added support for hidden fields
-* NEW: Added support for Section fields. 
-* NEW: Added support for EU VAT field
-* NEW: Added support for coupon fields
-* NEW: Support for Gravity Forms Ecommerce fields (subtotal, tax, discount)
-* NEW: Added support for Jetsloth Image Choices
-* Change the field label shown in the summary + mergetag support in label
-* Setting to change the "nothing selected" text
-* Add a custom css class to the field line in the summary
-* Adds a new fieldtype to Gravity that will output a live summary anywhere in your form!
-* Adds support for merge tags inside HTML fields. (currently only working in multi-page forms)
-* Make the summary sticky on scroll (very helpful for longer forms)
-* Easily change default labels (Title and Total)
-* Change the side of the summary (right or left)
-* Brand Styler to configure things like fonts, border settings, background settings and padding settings
-* Show summary on the confirmation page (experimental setting)
-
-More things are possible with this plugin such as moving the button just under the summary or adding a logo above it for example. This and more can currently only be done with custom code snippets. I provide these snippets free for Pro customers. 
-
-[GET PRO VERSION HERE](https://geekontheroad.com/live-summary-for-gravity-forms/) 
-
+[Get the Pro version](https://geekontheroad.com/live-summary-for-gravity-forms/?utm_source=wporg&utm_medium=readme&utm_campaign=pro)
 
 = Other plugins from the same developer =
-* EU Vat for gravity forms: Easily calculate and validate European VAT (taxes) in gravity forms [GET IT HERE HERE](https://geekontheroad.com/eu-vat-for-gravity-forms/) 
-* Coinbase Commerce for gravity forms: Accept cryptocurrency payments with Coinbase Commerce and Gravity Forms [GET IT HERE HERE](https://geekontheroad.com/coinbase-commerce-for-gravity-forms/) 
 
+* [EU VAT for Gravity Forms](https://geekontheroad.com/eu-vat-for-gravity-forms/?utm_source=wporg&utm_medium=readme&utm_campaign=crosssell) - calculate and validate European VAT in Gravity Forms
+* [Coinbase Commerce for Gravity Forms](https://geekontheroad.com/coinbase-commerce-for-gravity-forms/?utm_source=wporg&utm_medium=readme&utm_campaign=crosssell) - accept cryptocurrency payments with Coinbase Commerce
 
-> Compatible with Gravity forms 2.5 and up. 
+= Feature requests and bugs =
 
+Have an idea, or found a bug? Tell me in the support forum before leaving a review. Chances are high I can fix it.
 
-= Feature requests =
-This is a relatively new plugin and I am looking into how I can make the plugin better. Do you have an idea for this plugin? Please let me know in the support tab or mail me directly.
+= Hire me =
 
+Looking for someone to build something Gravity Forms related? I have years of experience with Gravity Forms and much longer with code. Find out more at [geekontheroad.com](https://geekontheroad.com/?utm_source=wporg&utm_medium=readme&utm_campaign=hireme).
 
-= Found any bugs? = 
-Please let me know before leaving a bad review. Chances are high that I will be able to fix it!
+Compatible with Gravity Forms 2.5 and up.
 
+== Installation ==
 
-= Hire Me =
-Are you looking for a professional to do a gravity forms related job? I have several years of experience with gravity forms and much longer with coding. Find out more on [my website](https://geekontheroad.com)
-
-
-
+1. Install and activate the plugin.
+2. Go to Forms > Settings > Live Summary.
+3. Switch on "Turn on summary".
+4. Edit the form and tick "Show in summary" on each field you want to include. You will find it in the field's General settings.
+5. The summary now appears beside your form.
+6. Optional: to show a running total, add at least one Product field and switch on "Show total in summary" on the same settings page.
 
 == Frequently Asked Questions ==
 
-= I installed the plugin but I don't see a summary? =
+= I installed the plugin but I don't see a summary =
 
-You have to turn on the summary per form. The plugin has its own settings page under form settings. Look for GF Summary Add-on in the form settings menu. 
+The summary is turned on per form. Go to Forms > Settings > Live Summary and switch on "Turn on summary".
 
-= The summary remains empty? =
+= The summary shows but stays empty =
 
-Don’t forget to turn on the checkbox “turn on summary” in the general settings of each field that needs to show in the summary. Still not working? --> please contact me.
+Turning the summary on is only half of it. You also choose which fields appear. Edit each field you want included and tick "Show in summary" in its General settings.
 
-= I don't see a total in the summary? =
+= I don't see a total in the summary =
 
-There are two conditions to see the total in the summary. Firstly you have to have at least one product field in the form. Secondly you need to make sure that the "Show total" setting is turned on. You can find this setting on the settings page.
+Two things are needed. The form must contain at least one Product field, and "Show total in summary" must be switched on in Forms > Settings > Live Summary.
 
-= I want to show the summary inside the form instead of next to the form?
+= Does the summary respect conditional logic? =
 
-This is possible with the Pro version of this plugin. It adds a new field to gravity forms and also adds support for live merge tags in HTML fields. Purchase Pro version [here](https://geekontheroad.com/live-summary-for-gravity-forms/) 
+Yes. Fields hidden by conditional logic are removed from the summary automatically and come back when the field is shown again.
 
-= I want to change the output of the summary, do you help? =
+= Does it work with products, quantities and totals? =
 
-Yes, send me a message and tell me what you would like and I will do my best to help you. (Paid service)
+Yes. Product, Option and Shipping fields appear with their quantities and prices, and the summary keeps a running total in your form's currency.
+
+= Can I show the summary inside the form instead of beside it? =
+
+That is a Pro feature. Pro adds a Live Summary field you can drop anywhere in the form, and you can use more than one per form. [See the Pro version](https://geekontheroad.com/live-summary-for-gravity-forms/?utm_source=wporg&utm_medium=readme&utm_campaign=faq).
+
+= Can I show the choice label instead of the stored value? =
+
+For drop downs, radio buttons and checkboxes this is a Pro setting. [See the Pro version](https://geekontheroad.com/live-summary-for-gravity-forms/?utm_source=wporg&utm_medium=readme&utm_campaign=faq).
+
+= Can I hide the summary on certain steps of a multi-page form? =
+
+That is a Pro setting. Pro lets you choose exactly which steps show the summary. [See the Pro version](https://geekontheroad.com/live-summary-for-gravity-forms/?utm_source=wporg&utm_medium=readme&utm_campaign=faq).
+
+= Can I style the summary? =
+
+The free version gives every summary line its own ID so you can target it with your own CSS. Pro adds full styling from the UI, including fonts, colours, borders, spacing and ready-made style presets.
+
+= Can I put the summary in a confirmation or notification email? =
+
+That is a Pro feature, using the {live_summary} merge tag. [See the Pro version](https://geekontheroad.com/live-summary-for-gravity-forms/?utm_source=wporg&utm_medium=readme&utm_campaign=faq).
+
+= Can you change the output for me? =
+
+Yes, tell me what you need and I will do my best to help. This is a paid service.
 
 == Screenshots ==
 
-1. Empty summary shows next to the form on laptop and under the form on mobile.
-2. Summary is filled while making selections in the form.
-3. Plugin settings page. Here you can turn the summary on or off.
-4. Field settings. All supported fields have a checkbox to control visibility in the summary
-
-
-
+1. A live order summary with a running total, updating as people make their choices.
+2. The summary builds itself as the form is filled in.
+3. The summary carries across every step of a multi-page form, including names, addresses and shipping.
+4. Turn the summary on per form. No coding required.
+5. Tick one box on any supported field to include it in the summary.
+6. Pro: style the summary to match your site, and group it into collapsible sections with edit links back to earlier steps.
+7. On mobile the free version places the summary under the form. Pro adds a summary bar with a tap to open sheet.
 
 == Changelog ==
 = 1.2.10 =
@@ -148,10 +154,10 @@ Yes, send me a message and tell me what you would like and I will do my best to 
 * Fix tags and short description notice
 * Fix minimum WP version notice
 
-= 1.2.8 = 
+= 1.2.8 =
 * Dev: Fixed PHP notice.
 
-= 1.2.7 = 
+= 1.2.7 =
 * Improvement: Changed plugin title from GF Live summary Addon to Live Summary
 * Improvement: Added new Upgrade banner with new PRO features
 
@@ -170,8 +176,8 @@ Yes, send me a message and tell me what you would like and I will do my best to 
 = 1.2.3 =
 * Improvement: Added message when there are no fields selected for the summary
 
-= 1.2.2 = 
-* Dev: Added support for capabilities. 
+= 1.2.2 =
+* Dev: Added support for capabilities.
 
 = 1.2.1.1 =
 * Dev: Added filter "gotrgf_change_summary_items_order" to change the order of items in the summary
@@ -227,7 +233,7 @@ Yes, send me a message and tell me what you would like and I will do my best to 
 * Enhancement: Added 7 hooks and 7 filters. Documentation coming soon.
 * Removed: form settings js page as reduntant
 
-= 1.0.8 = 
+= 1.0.8 =
 Changed name to Live Summary for Gravity Forms
 
 = 1.0.7 =
@@ -243,15 +249,10 @@ Changed name to Live Summary for Gravity Forms
 * Bug: Fixed missing tooltip in field settings
 
 = 1.0.4 =
-* Bug: Fixed missing css when some field types were used separately. 
+* Bug: Fixed missing css when some field types were used separately.
 
 = 1.0.3 =
-* Bug: Fixed Fatal Error when products found 
+* Bug: Fixed Fatal Error when products found
 
 = 1.0.2 =
 * First Public Release (16-12-2021)
-
-
-== Upgrade Notice ==
-
-
