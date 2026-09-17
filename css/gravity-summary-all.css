@@ -1,0 +1,120 @@
+/** this is the container placed around the form and summary **/
+
+.gotrgf_form_container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 2em;
+}
+
+
+/*This is the form alone*/
+
+.gotrgf_form_wrapper {
+    width: 65%;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(0, 0, 0, .2);
+    padding: 1em;
+}
+
+
+/*This is the summary*/
+
+.gotrgf_summary_wrapper {
+    width: 30%;
+}
+
+@media only screen and (max-width: 641px) {
+    .gotrgf_form_container {
+        display: block !important;
+    }
+    .gotrgf_form_wrapper {
+        width: 100% !important;
+    }
+    .gotrgf_summary_wrapper {
+        width: 100% !important;
+    }
+}
+
+.gotrgf_form_overview_container {
+    background-color: #ffffff;
+    /*padding: .5em;*/
+    border: 1px solid rgba(0, 0, 0, .2);
+    border-radius: 0.5rem;
+    position: relative;
+}
+
+@media only screen and (max-width: 768px) {
+    .gotrgf_form_overview_container {
+        margin-top: 2em;
+    }
+}
+
+.gotrgf_form_overview_container>.gotrgf_summary_title {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.gotrgf_form_overview_container>.gotrgf_summary_total {
+    border-top: 1px solid #e5e5e5;
+    display: flex;
+}
+
+
+/*.gotrgf_form_overview_container > .gotrgf_summary_total > p {
+	margin-bottom: 0;
+	font-size: 1.75em;
+	text-align: center;
+	font-weight: 700;
+	margin-top: .3em;
+}*/
+
+.gotrgf_form_overview_container>.gotrgf_summary_total>.gotrgf_label {
+    min-width: 36%;
+    padding: .3em;
+    font-weight: 700;
+}
+
+.gotrgf_form_overview_container>.gotrgf_summary_total>.gotrgf_total_right {
+    flex: 1;
+    text-align: right;
+    padding: .3em;
+}
+
+.gotrgf_price_amount {
+    font-weight: bold;
+}
+
+.gotrgf_form_overview_container>.gotrgf_summary_title>h5 {
+    font-weight: 500;
+    padding: .3em;
+}
+
+.gotrgf_form_overview_container>.gotrgf_summary_lines>.gotrgf_summary_line {
+    font-size: 0.85em;
+    margin-bottom: .3em;
+    display: flex;
+}
+
+.gotrgf_form_overview_container>.gotrgf_summary_lines {
+    padding: .3em;
+}
+
+.gotrgf_form_overview_container>.gotrgf_summary_lines>.gotrgf_summary_line>.gotrgf_line_part_left {
+    min-width: 36%;
+}
+
+.gotrgf_form_overview_container>.gotrgf_summary_lines>.gotrgf_summary_line>.gotrgf_line_part_right {
+    flex: 1;
+    font-weight: 700;
+    text-align: right;
+}
+
+.gotrgf_preloader_image {
+    position: absolute;
+    top: calc(50% - 8px);
+    left: calc(50% - 8px);
+}
+
+.gotrgf_hide_preloader {
+    display: none;
+}

@@ -1,0 +1,5 @@
+/*
+ * This forces the max width to be the same as the width set by the GF plugin
+ * It fixes the plugin icon to be too big in the settings dropdown ONLY NEEDED FOR SAFARI!
+ */
+.gform-form-toolbar__icon img { max-width: 1.25rem !important; }
