@@ -16,29 +16,30 @@ function build() {
     plugin_name=$1
 
     target=target
-    plugin_dir=${plugin_name}
-    plugin_zip=${plugin_name}.zip
+    plugin_zip=${target}/${plugin_name}.zip
 
-    # Ensure the target directory exists
+    # Ensure the target directory exists and remove the previous zip file
     mkdir -p ${target}
+    rm -f ${plugin_zip}
 
-    # Clean up previous build folder and zip file
-    rm -rf ${target}/${plugin_dir}
-    rm -f ${target}/${plugin_zip}
+    # Turn every .deployignore entry into a git exclude pathspec
+    excludes=()
+    while IFS= read -r line || [ -n "$line" ]; do
+        line=${line%$'\r'}
+        line=${line%/}
+        if [ -n "$line" ] && [ "${line:0:1}" != "#" ]; then
+            excludes+=(":(exclude)${line}")
+        fi
+    done < .deployignore
 
-    # Create a temporary directory with the plugin name
-    mkdir -p ${target}/${plugin_dir}
+    # Zip the committed files into a folder named after the plugin. Needs only git, so it also works in Git Bash on Windows.
+    git archive --format=zip --prefix=${plugin_name}/ -o ${plugin_zip} HEAD -- . "${excludes[@]}"
 
-    # Copy all files (excluding .deployignore entries) into the temporary folder
-    rsync -av --exclude-from=.deployignore ./ ${target}/${plugin_dir}/
+    if [ -n "$(git status --porcelain)" ]; then
+        log "The working tree has uncommitted changes. They are not in the zip." "WARNING"
+    fi
 
-    # Create the zip file containing the folder
-    (cd ${target} && zip -r ${plugin_zip} ${plugin_dir})
-
-    # Clean up the temporary folder
-    rm -rf ${target}/${plugin_dir}
-
-    log "Plugin ready: ${target}/${plugin_zip}"
+    log "Plugin ready: ${plugin_zip} (built from $(git rev-parse --short HEAD))"
 }
 
 if [ "$#" -ne 1 ]; then
