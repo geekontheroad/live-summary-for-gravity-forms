@@ -1,0 +1,23 @@
+# Ignore build artifacts
+target/
+vendor/
+
+# Ignore Git-related files
+.git/
+.gitignore
+.gitattributes
+.deployignore
+.github/
+
+# Ignore developer tools
+.editorconfig
+.env
+
+# Ignore CI/CD scripts and build tools
+bin/
+
+# Ignore project metadata and configs
+composer.json
+composer.lock
+phpcs.xml.dist
+README.md

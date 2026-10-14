@@ -10,3 +10,7 @@ ehthumbs.db
 
 # Logs
 *.log
+
+# Dev tooling
+vendor/
+target/

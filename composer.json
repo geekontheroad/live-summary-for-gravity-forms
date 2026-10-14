@@ -1,0 +1,36 @@
+{
+	"name": "geekontheroad/live-summary-for-gravity-forms",
+	"description": "Live Summary for Gravity Forms",
+	"type": "wordpress-plugin",
+	"license": "GPL-2.0-or-later",
+	"authors": [
+		{
+			"name": "Johan d'Hollander",
+			"email": "johan@geekontheroad.com",
+			"homepage": "https://geekontheroad.com"
+		}
+	],
+	"minimum-stability": "stable",
+	"require-dev": {
+		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+		"phpcompatibility/phpcompatibility-wp": "*",
+		"sirbrillig/phpcs-import-detection": "^1.3",
+		"sirbrillig/phpcs-variable-analysis": "^2.11",
+		"squizlabs/php_codesniffer": "^3.11",
+		"wp-coding-standards/wpcs": "^3.1"
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true,
+			"composer/package-versions-deprecated": true
+		},
+		"platform": {
+			"php": "8.2"
+		}
+	},
+	"scripts": {
+		"format": "@php ./vendor/squizlabs/php_codesniffer/bin/phpcbf . --report=summary,source",
+		"lint": "@php ./vendor/squizlabs/php_codesniffer/bin/phpcs . --report=summary,source",
+		"lint:errors": "@lint -n"
+	}
+}
