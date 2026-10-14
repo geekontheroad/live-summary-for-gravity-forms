@@ -4,7 +4,7 @@ Donate link: https://geekontheroad.com/donate
 Tags: gravity-forms, order-summary, order-form, form-preview, submission-preview
 Requires at least: 6.5
 Tested up to: 7.1
-Stable tag: 1.2.10
+Stable tag: 1.2.11
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -40,7 +40,7 @@ Add a summary panel beside any Gravity Form in a few clicks. Tick the fields you
 
 = Supported fields =
 
-The free version supports Single Line Text, Paragraph Text, Drop Down, Number, Checkboxes, Radio Buttons, Name, Date, Time, Phone, Address, Website, Username, Email, Multi Select, Product, Total and Shipping.
+The free version supports Single Line Text, Paragraph Text, Drop Down, Number, Checkboxes, Radio Buttons, Name, Date, Time, Phone, Address, Website, Username, Email, Multi Select, Image Choice, Multiple Choice, Product, Option and Shipping.
 
 More field types are supported in the Pro version.
 
@@ -84,7 +84,7 @@ Compatible with Gravity Forms 2.5 and up.
 == Installation ==
 
 1. Install and activate the plugin.
-2. Go to Forms > Settings > Live Summary.
+2. Open a form and go to Settings > Live Summary.
 3. Switch on "Turn on summary".
 4. Edit the form and tick "Show in summary" on each field you want to include. You will find it in the field's General settings.
 5. The summary now appears beside your form.
@@ -94,7 +94,7 @@ Compatible with Gravity Forms 2.5 and up.
 
 = I installed the plugin but I don't see a summary =
 
-The summary is turned on per form. Go to Forms > Settings > Live Summary and switch on "Turn on summary".
+The summary is turned on per form. Open the form, go to Settings > Live Summary and switch on "Turn on summary".
 
 = The summary shows but stays empty =
 
@@ -102,7 +102,7 @@ Turning the summary on is only half of it. You also choose which fields appear. 
 
 = I don't see a total in the summary =
 
-Two things are needed. The form must contain at least one Product field, and "Show total in summary" must be switched on in Forms > Settings > Live Summary.
+Two things are needed. The form must contain at least one Product field, and "Show total in summary" must be switched on in the form's Settings > Live Summary.
 
 = Does the summary respect conditional logic? =
 
@@ -147,6 +147,24 @@ Yes, tell me what you need and I will do my best to help. This is a paid service
 7. On mobile the free version places the summary under the form. Pro adds a summary bar with a tap to open sheet.
 
 == Changelog ==
+= 1.2.11 =
+* Security: Fixed a cross-site scripting (XSS) issue where field values and labels were inserted into the summary as HTML. All values are now escaped.
+* Security: Removed three unauthenticated AJAX endpoints. The summary configuration is now printed with the form, which also removes an extra request on every page load.
+* Security: Escaped all remaining output and added direct file access protection.
+* Fix: The summary now works correctly with more than one form on the same page.
+* Fix: Option fields of the checkbox type, and Multi Select fields with nothing selected, no longer cause errors.
+* Improvement: Visitors no longer see a setup message when no fields are selected. Form administrators see a hint with a link to the form editor instead.
+* Improvement: The Live Summary settings page now warns when no fields are selected and explains how to select them.
+* Improvement: Added a getting started message on the Gravity Forms screens after activation.
+* Improvement: Added a one-time review request on the Gravity Forms screens, shown two weeks after the summary is first turned on.
+* New: Added support for the Image Choice and Multiple Choice fields.
+* Improvement: Field types that only Live Summary Pro supports now show which version can add them to the summary.
+* Improvement: Removed the border, rounded corners and padding around the form, so the form keeps the styling of your theme.
+* Fix: The summary now fits dark themes, long values such as email addresses wrap instead of overflowing, the summary title no longer picks up theme heading margins, and the layout on tablets is fixed.
+* Improvement: All frontend and settings texts are now translatable.
+* Dev: Removed the obsolete v1.1 settings migration and dead code.
+* Dev: Added WordPress Coding Standards (PHPCS) tooling.
+
 = 1.2.10 =
 * Fix: Replaced deprecated Gravity Forms `Currency` JS class with `gform.Currency` (deprecated since GF 2.9), removing console warnings. Backward compatible with older GF via fallback.
 

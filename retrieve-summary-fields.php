@@ -1,360 +1,249 @@
 <?php
 /**
- * Class that will handle all the communications between PHP and the GF database on one side and Javascript and the front end on the other side.
+ * Helpers that collect the summary configuration of a form.
  *
- * @access public
- *
- * @author Johan from Geekontheroad. <https://geekontheroad.com>
+ * @package live-summary-for-gravity-forms
+ * @author  Johan from Geekontheroad. <https://geekontheroad.com>
  */
 
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * Reads the summary settings and selected fields of a form.
+ */
 class gotrgf_retrieve_summary_fields {
 
-	public static function init() {
-		$class = __CLASS__;
-		new $class();
-	}
-
-	public function __construct() {
-	}
+	// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- Gravity Forms field property names.
 
 	/**
-	 * Writes a log message to the Live Summary addon logs
+	 * The field types that can be shown in the summary.
 	 *
-	 * @param String $method from where the message originates
-	 * @param String $message Message to log
+	 * @since 1.2.11
 	 */
-	public static function log_debug( $method, $message ) {
-		$instance = new GFSummaryAddOn();
-		$instance->log_debug( $method . '() ' . $message );
-	}
-
-
-
-
-
+	const FIELD_TYPES = array( 'text', 'radio', 'checkbox', 'select', 'number', 'email', 'textarea', 'date', 'phone', 'website', 'name', 'address', 'multiselect', 'username', 'product', 'option', 'time', 'shipping', 'image_choice', 'multi_choice' );
 
 	/**
-	 * This function will check a formID and get all the fields for the summary
+	 * Field types only Live Summary Pro can show in the summary: core and Gravity Wiz fields, and the Pro add-on fields.
 	 *
-	 * @return Mixed Json object of an array that contains all the fieldIDs for the summary
+	 * @since 1.2.11
 	 */
-	public static function retrieve_gravity_summary_fields() {
+	const PRO_FIELD_TYPES = array( 'hidden', 'section', 'coupon', 'subtotal', 'tax', 'discount', 'gotrgf_eu_vat_field', 'uid' );
 
-		self::log_debug( __METHOD__, '... Running ' );
+	/**
+	 * Get the field types only Live Summary Pro can show in the summary.
+	 * Besides the known types, this includes add-on fields that are built on a core input, as Pro supports those too.
+	 *
+	 * @since 1.2.11
+	 *
+	 * @return string[]
+	 */
+	public static function get_pro_field_types() {
+		$types       = self::PRO_FIELD_TYPES;
+		$held_back   = array( 'quiz', 'poll', 'survey', 'chainedselect' );
+		$core_inputs = array(
+			'multiselect' => 'GF_Field_MultiSelect',
+			'select'      => 'GF_Field_Select',
+			'radio'       => 'GF_Field_Radio',
+			'checkbox'    => 'GF_Field_Checkbox',
+			'textarea'    => 'GF_Field_Textarea',
+			'number'      => 'GF_Field_Number',
+			'email'       => 'GF_Field_Email',
+			'hidden'      => 'GF_Field_Hidden',
+			'text'        => 'GF_Field_Text',
+		);
 
-		if ( isset( $_REQUEST ) ) {
-			// check if the gravity class exists
-			if ( ! class_exists( 'GFAPI' ) ) {
-				self::log_debug( __METHOD__, '... Class GFAPI not found, aborting ' );
-				return;
+		foreach ( GF_Fields::get_all() as $type => $field ) {
+			if ( in_array( $type, $held_back, true ) || 0 === strpos( $type, 'post_' ) || GFCommon::is_product_field( $type ) ) {
+				continue;
 			}
 
-			// get form id from request sanitize it and make sure it is valid
-			$formID = sanitize_key( $_GET['formid'] );
-			if ( ! is_numeric( $formID ) ) {
-				return;
+			if ( isset( $core_inputs[ (string) $field->inputType ] ) ) {
+				$types[] = $type;
+				continue;
 			}
 
-			// retrieve form object and make sure it is valid
-			$form = GFAPI::get_form( intval( $formID ) );
-			if ( $form === false ) {
-				return;
-			}
-
-			$post_id = sanitize_key( $_GET['post_id'] );
-
-			// check if there are any live summary fields in the form
-			$summary_fields_found = GFAPI::get_fields_by_type( $form, array( 'gotrgf_live_summary_field' ), false );
-
-			// abort if the summary is turned off and there are no live summary fields
-			if ( ( ! isset( $form['gravitysummary'] ) || ! is_array( $form['gravitysummary'] ) || ! isset( $form['gravitysummary']['show_summary'] ) ) && empty( $summary_fields_found ) ) {
-				// if(!$form["gravitysummary"]['show_summary'] && empty($summary_fields_found)) {
-				return;
-			}
-
-			// retrieve all the fields of this form
-			$fields = $form['fields'];
-			// start new array that will store all the valid ids
-			$fields_in_summary = array();
-			// loop through all ids
-			foreach ( $fields as $index => $field ) {
-				// declare some variables
-				$id = $field['id'];
-
-				$type = $field['type'];
-				// get timeformat for time fields, other fields just get empty value
-				$timeFormat = $type == 'time' ? $field['timeFormat'] : '';
-				// get datetype for date fields
-				$dateType = $type == 'date' ? $field['dateType'] : '';
-				// get dateformat for date fields
-				$dateFormat = $type == 'date' ? $field['dateFormat'] : '';
-				// get the type of product
-				$inputType = $type == 'product' ? $field['inputType'] : '';
-				// get the type of product
-				$optionType = $type == 'option' ? $field['inputType'] : '';
-				// get the type of shipping
-				$shippingType = $type == 'shipping' ? $field['inputType'] : '';
-
-				// get current field object
-				$field_obj = GFAPI::get_field( $formID, $id );
-				if ( $field_obj === false ) {
-					return;
-				}
-
-				if ( $field_obj ) {
-
-					// see if this field has to be in the summary
-					$insummary = $field_obj->liveSummaryField;
-					// the label now supports certain mergetags such as embed_post etc
-					$label               = isset( $field_obj->liveSummaryLabel ) && ! empty( $field_obj->liveSummaryLabel ) ? self::maybe_replace_mergetags_label( $field_obj->liveSummaryLabel, $post_id ) : $field['label'];
-					$classes             = isset( $field_obj->liveSummaryClasses ) && ! empty( $field_obj->liveSummaryClasses ) ? $field_obj->liveSummaryClasses : '';
-					$imageChoices        = isset( $field_obj->gotr_images_enabled ) && ! empty( $field_obj->gotr_images_enabled ) ? $field_obj->gotr_images_enabled : '';
-					$displayChoiceLabels = isset( $field_obj->liveSummaryShowChoiceLabels ) && ! empty( $field_obj->liveSummaryShowChoiceLabels ) ? $field_obj->liveSummaryShowChoiceLabels : '';
-
-					if ( $insummary ) {
-						// add to fieldids array that will be returned at the end of this function
-						$fields_in_summary[] = array(
-							'id'           => $id,
-							'label'        => $label,
-							'type'         => $type,
-							'timeFormat'   => $timeFormat,
-							'dateType'     => $dateType,
-							'inputType'    => $inputType,
-							'optionType'   => $optionType,
-							'shippingType' => $shippingType,
-							'dateFormat'   => $dateFormat,
-							'classes'      => $classes,
-							'imagechoices' => $imageChoices,
-							'choiceLabels' => $displayChoiceLabels,
-						);
-					}
+			foreach ( $core_inputs as $class ) {
+				if ( $field instanceof $class ) {
+					$types[] = $type;
+					break;
 				}
 			}
-
-			/**
-			 * Add a filter to change the order of items in the summary
-			 *
-			 * How to use:
-			 * Return an array of field ids. The script will display the items in that order. any ids not defined will be added to the end
-			 *
-			 * @since v1.2.2
-			 */
-			$order = array();
-			// $order = apply_filters("gotrgf_change_summary_items_order", $order, $form);
-			$order = gf_apply_filters( 'gotrgf_change_summary_items_order', array( $form['id'] ), $order, $form );
-
-			if ( is_array( $order ) && ! empty( $order ) ) {
-				$reordered_fields = array();
-				// we need to reorder the $fields_in_summary
-				foreach ( $order as $key => $field_id ) {
-					$key                = array_search( $field_id, array_column( $fields_in_summary, 'id' ) );
-					$reordered_fields[] = $fields_in_summary[ $key ];
-				}
-
-				// we have to make sure that all summary activated fields end up in the summary (a user could forget to list an ID in the filter) so lets add all remaining fields to the end
-				foreach ( $fields_in_summary as $key => $field ) {
-					$found = array_search( $field['id'], array_column( $reordered_fields, 'id' ) );
-
-					if ( $found === false ) {
-						// found a field that is not listed yet so add it to te end
-						$keytwo             = array_search( $field['id'], array_column( $fields_in_summary, 'id' ) );
-						$reordered_fields[] = $fields_in_summary[ $keytwo ];
-					} else {
-						continue;
-					}
-				}
-				$fields_in_summary = $reordered_fields;
-			}
-
-			// return fieldIDS array as json object
-			header( 'Content-Type: application/json' );
-			echo json_encode( $fields_in_summary );
-
-			// stop here
-			die();
-
 		}
+
+		return array_values( array_diff( array_unique( $types ), self::FIELD_TYPES ) );
 	}
 
+	/**
+	 * Whether the summary is switched on in the form settings.
+	 *
+	 * @since 1.2.11
+	 *
+	 * @param array $form The form object.
+	 *
+	 * @return bool
+	 */
+	public static function is_summary_enabled( $form ) {
+		return ! empty( rgars( $form, 'gravitysummary/show_summary' ) );
+	}
 
+	/**
+	 * Whether at least one field has "Show in summary" ticked.
+	 *
+	 * @since 1.2.11
+	 *
+	 * @param array $form The form object.
+	 *
+	 * @return bool
+	 */
+	public static function has_selected_fields( $form ) {
+		foreach ( (array) rgar( $form, 'fields' ) as $field ) {
+			if ( ! empty( $field->liveSummaryField ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Whether the summary should be rendered for the current visitor.
+	 * Without selected fields the summary is only shown to users who can edit the form, so they see how to set it up.
+	 *
+	 * @since 1.2.11
+	 *
+	 * @param array $form The form object.
+	 *
+	 * @return bool
+	 */
+	public static function should_display_summary( $form ) {
+		if ( ! self::is_summary_enabled( $form ) ) {
+			return false;
+		}
+
+		return self::has_selected_fields( $form ) || GFCommon::current_user_can_any( 'gravityforms_edit_forms' );
+	}
+
+	/**
+	 * Get the fields that have to be shown in the summary, with the settings the frontend script needs.
+	 *
+	 * @since 1.2.11 Replaces the retrieve_gravity_summary_fields AJAX endpoint.
+	 *
+	 * @param array $form The form object.
+	 *
+	 * @return array
+	 */
+	public static function get_summary_fields( $form ) {
+		$post_id           = is_singular() ? get_queried_object_id() : 0;
+		$fields_in_summary = array();
+
+		foreach ( (array) rgar( $form, 'fields' ) as $field ) {
+			if ( empty( $field->liveSummaryField ) ) {
+				continue;
+			}
+
+			// Image Choice and Multiple Choice fields are radio buttons or checkboxes on the page, so they are read like those.
+			$type  = in_array( $field->type, array( 'image_choice', 'multi_choice' ), true ) ? $field->get_input_type() : $field->type;
+			$label = ! empty( $field->liveSummaryLabel ) ? self::maybe_replace_mergetags_label( $field->liveSummaryLabel, $post_id ) : $field->label;
+
+			$fields_in_summary[] = array(
+				'id'           => $field->id,
+				'label'        => $label,
+				'type'         => $type,
+				'timeFormat'   => 'time' === $type ? $field->timeFormat : '',
+				'dateType'     => 'date' === $type ? $field->dateType : '',
+				'inputType'    => 'product' === $type ? $field->inputType : '',
+				'optionType'   => 'option' === $type ? $field->inputType : '',
+				'shippingType' => 'shipping' === $type ? $field->inputType : '',
+				'dateFormat'   => 'date' === $type ? $field->dateFormat : '',
+				'classes'      => ! empty( $field->liveSummaryClasses ) ? $field->liveSummaryClasses : '',
+				'imagechoices' => ! empty( $field->gotr_images_enabled ) ? $field->gotr_images_enabled : '',
+				'choiceLabels' => ! empty( $field->liveSummaryShowChoiceLabels ) ? $field->liveSummaryShowChoiceLabels : '',
+			);
+		}
+
+		/**
+		 * Add a filter to change the order of items in the summary
+		 *
+		 * How to use:
+		 * Return an array of field ids. The script will display the items in that order. Any ids not defined will be added to the end
+		 *
+		 * @since v1.2.2
+		 */
+		$order = gf_apply_filters( array( 'gotrgf_change_summary_items_order', $form['id'] ), array(), $form );
+
+		if ( is_array( $order ) && ! empty( $order ) ) {
+			$fields_by_id = array_column( $fields_in_summary, null, 'id' );
+			$reordered    = array();
+
+			foreach ( $order as $field_id ) {
+				if ( isset( $fields_by_id[ $field_id ] ) ) {
+					$reordered[] = $fields_by_id[ $field_id ];
+					unset( $fields_by_id[ $field_id ] );
+				}
+			}
+
+			// Make sure all selected fields end up in the summary, even if they are missing from the filtered order.
+			$fields_in_summary = array_merge( $reordered, array_values( $fields_by_id ) );
+		}
+
+		return $fields_in_summary;
+	}
 
 	/**
 	 * This method will check a string for the existence of any mergetags that are available without the entry object such as user and post tags
 	 *
-	 * @param string $text   The text to filter
-	 * @param int    $post_id   The post ID where the request came from
-	 * @param bool   $url_encode whether to encode the value
+	 * @param string $text       The text to filter.
+	 * @param int    $post_id    The ID of the post the form is embedded in.
+	 * @param bool   $url_encode Whether to encode the value.
 	 *
 	 * @return string $text
 	 */
 	public static function maybe_replace_mergetags_label( $text, $post_id, $url_encode = false ) {
 
-		if ( strpos( $text, '{' ) !== false ) {
-
-			// embed post and custom fields
-			preg_match_all( '/\{embed_post:(.*?)\}/', $text, $ep_matches, PREG_SET_ORDER );
-			preg_match_all( '/\{custom_field:(.*?)\}/', $text, $cf_matches, PREG_SET_ORDER );
-
-			if ( ! empty( $ep_matches ) || ! empty( $cf_matches ) ) {
-				$post        = get_post( $post_id );
-				$is_singular = true;
-				$post_array  = GFCommon::object_to_array( $post );
-
-				// embed_post
-				foreach ( $ep_matches as $match ) {
-					$full_tag = $match[0];
-					$property = $match[1] == 'post_id' ? 'ID' : $match[1];
-					$value    = $is_singular ? $post_array[ $property ] : '';
-					$text     = str_replace( $full_tag, $url_encode ? urlencode( $value ) : $value, $text );
-				}
-
-				// custom_field
-				foreach ( $cf_matches as $match ) {
-					$full_tag           = $match[0];
-					$custom_field_name  = $match[1];
-					$custom_field_value = $is_singular && ! empty( $post_array['ID'] ) ? get_post_meta( $post_array['ID'], $custom_field_name, true ) : '';
-					$text               = str_replace( $full_tag, $url_encode ? urlencode( $custom_field_value ) : $custom_field_value, $text );
-				}
-			}
-
-			return GFCommon::replace_variables_prepopulate( $text );
+		if ( strpos( $text, '{' ) === false ) {
+			return $text;
 		}
 
-		return $text;
+		// Embed post and custom fields.
+		preg_match_all( '/\{embed_post:(.*?)\}/', $text, $ep_matches, PREG_SET_ORDER );
+		preg_match_all( '/\{custom_field:(.*?)\}/', $text, $cf_matches, PREG_SET_ORDER );
+
+		if ( ! empty( $ep_matches ) || ! empty( $cf_matches ) ) {
+			$post       = $post_id ? get_post( $post_id ) : null;
+			$post_array = $post ? GFCommon::object_to_array( $post ) : array();
+
+			foreach ( $ep_matches as $match ) {
+				$property = 'post_id' === $match[1] ? 'ID' : $match[1];
+				$value    = (string) rgar( $post_array, $property );
+				$text     = str_replace( $match[0], $url_encode ? rawurlencode( $value ) : $value, $text );
+			}
+
+			foreach ( $cf_matches as $match ) {
+				$value = $post ? (string) get_post_meta( $post->ID, $match[1], true ) : '';
+				$text  = str_replace( $match[0], $url_encode ? rawurlencode( $value ) : $value, $text );
+			}
+		}
+
+		return GFCommon::replace_variables_prepopulate( $text );
 	}
 
-
-
-
 	/**
-	 * returns true if product fields are found
+	 * Returns true if the form contains a product field.
 	 *
-	 * @param Int|String $form_id the id of the form
+	 * @param array|int $form The form object or form ID.
 	 *
-	 * @return Bool        true if any fields are found for this form
-	 **/
-	public static function product_fields_found( $form_id ) {
-		self::log_debug( __METHOD__, '... Running for form ' . $form_id );
-
-		// check if the gravity class exists
-		if ( ! class_exists( 'GFAPI' ) ) {
-			self::log_debug( __METHOD__, ' Aborting, Class GFAPI not found ' . $form_id );
-			return;
-		}
-
-		// sanitize and check if we have a number
-		$formID = sanitize_key( $form_id );
-		if ( ! is_numeric( $formID ) ) {
-			self::log_debug( __METHOD__, ' problem with form id ' );
-			return;
-		}
-
-		// get form and validate it Return false if anything wrong with $form
-		$form = GFAPI::get_form( $form_id );
-		if ( $form === false ) {
-			self::log_debug( __METHOD__, ' problem with form object ' . $form_id );
-			return false;
-		}
-
-		// check if there are any live summary fields in the form
-		$summary_fields_found = GFAPI::get_fields_by_type( $form, array( 'gotrgf_live_summary_field' ), false );
-
-			// abort if the summary is turned off and there aren't any summary fields
-		if ( ! $form['gravitysummary']['show_summary'] && empty( $summary_fields_found ) ) {
-			self::log_debug( __METHOD__, ' no summary needed, abort executing ' );
-			return false;
-		}
-
-		$fields = $form['fields'];
-
-		if ( $fields ) {
-			self::log_debug( __METHOD__, ' Start looping through fields ' );
-
-			foreach ( $fields as $index => $field ) {
-				$field_type = $field['type'];
-				if ( $field_type == 'product' ) {
-					self::log_debug( __METHOD__, ' Product field found. Finished ' );
-					return true;
-				}
-			}
-			self::log_debug( __METHOD__, ' No Product fields found. Finished ' );
-			return false;
-		}
-	}
-
-
-
-
-
-
-	/**
-	 * return a form object as json for ajax handler
-	 *
-	 * @return Mixed json object of a gravity form object
-	 **/
-	public static function gravity_summary_retrieve_field_object() {
-		if ( isset( $_REQUEST ) ) {
-			self::log_debug( __METHOD__, ' Running ' );
-			// check if the gravity class exists
-			if ( ! class_exists( 'GFAPI' ) ) {
-				self::log_debug( __METHOD__, ' Gravity GFAPI does not exist ' );
-				return;
-			}
-
-			// get form id from request
-			$formID = sanitize_key( $_GET['formid'] );
-			if ( is_numeric( $formID ) ) {
-				self::log_debug( __METHOD__, ' problem with formID while retrieving field object ' );
-				return;
-			}
-
-			$fieldID = sanitize_key( $_GET['fieldid'] );
-			if ( is_numeric( $fieldID ) ) {
-				self::log_debug( __METHOD__, ' problem with fieldid while retrieving field object ' );
-				return;
-			}
-
-			$field_obj = GFAPI::get_field( intval( $formID ), intval( $fieldID ) );
-
-			if ( $field_obj ) {
-				// return fieldIDS array as json object
-				header( 'Content-Type: application/json' );
-				echo json_encode( $field_obj );
-				die();
-			} else {
-				header( 'Content-Type: application/json' );
-				echo json_encode( 'failed' );
-				die();
-			}
-		}
-	}
-
-
-
-
-
-
-	/**
-	 * This function formats a number received from ajax and turns it into the right currency
+	 * @return bool
 	 */
-	public static function gravity_summary_format_money() {
-		if ( isset( $_REQUEST ) ) {
-			// check if the gravity class exists
-			if ( ! class_exists( 'GFCommon' ) ) {
-				error_log( 'GFcommon does not exist' );
-				return;
-			}
-
-			$value_to_format = $_GET['value'];
-
-			require_once GFCommon::get_base_path() . '/currency.php';
-			$currency        = new RGCurrency( GFCommon::get_currency() );
-			$formatted_value = $currency->to_money( $value_to_format );
-
-			echo html_entity_decode( $formatted_value );
-
-			die();
+	public static function product_fields_found( $form ) {
+		if ( ! is_array( $form ) ) {
+			$form = GFAPI::get_form( absint( $form ) );
 		}
+
+		if ( ! is_array( $form ) ) {
+			GFSummaryAddOn::get_instance()->log_debug( __METHOD__ . '(): Invalid form, aborting.' );
+			return false;
+		}
+
+		return ! empty( GFAPI::get_fields_by_type( $form, array( 'product' ) ) );
 	}
 }
-add_action( 'plugins_loaded', array( 'gotrgf_retrieve_summary_fields', 'init' ) );

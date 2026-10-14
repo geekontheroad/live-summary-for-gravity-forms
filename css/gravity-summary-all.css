@@ -7,16 +7,11 @@
     margin-top: 2em;
 }
 
-
 /*This is the form alone*/
 
 .gotrgf_form_wrapper {
     width: 65%;
-    border-radius: 0.5rem;
-    border: 1px solid rgba(0, 0, 0, .2);
-    padding: 1em;
 }
-
 
 /*This is the summary*/
 
@@ -24,49 +19,36 @@
     width: 30%;
 }
 
+/* Small screens: stack the form and the summary, with space between them on either side */
 @media only screen and (max-width: 641px) {
     .gotrgf_form_container {
-        display: block !important;
+        flex-direction: column;
+        gap: 2em;
     }
-    .gotrgf_form_wrapper {
-        width: 100% !important;
-    }
+    .gotrgf_form_wrapper,
     .gotrgf_summary_wrapper {
-        width: 100% !important;
+        width: 100%;
     }
 }
 
 .gotrgf_form_overview_container {
-    background-color: #ffffff;
-    /*padding: .5em;*/
+    /* No background and borders based on the text color, so the summary fits light and dark themes */
     border: 1px solid rgba(0, 0, 0, .2);
+    border: 1px solid color-mix(in srgb, currentColor 20%, transparent);
     border-radius: 0.5rem;
     position: relative;
 }
 
-@media only screen and (max-width: 768px) {
-    .gotrgf_form_overview_container {
-        margin-top: 2em;
-    }
-}
-
 .gotrgf_form_overview_container>.gotrgf_summary_title {
     border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid color-mix(in srgb, currentColor 12%, transparent);
 }
 
 .gotrgf_form_overview_container>.gotrgf_summary_total {
     border-top: 1px solid #e5e5e5;
+    border-top: 1px solid color-mix(in srgb, currentColor 12%, transparent);
     display: flex;
 }
-
-
-/*.gotrgf_form_overview_container > .gotrgf_summary_total > p {
-	margin-bottom: 0;
-	font-size: 1.75em;
-	text-align: center;
-	font-weight: 700;
-	margin-top: .3em;
-}*/
 
 .gotrgf_form_overview_container>.gotrgf_summary_total>.gotrgf_label {
     min-width: 36%;
@@ -76,6 +58,8 @@
 
 .gotrgf_form_overview_container>.gotrgf_summary_total>.gotrgf_total_right {
     flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
     text-align: right;
     padding: .3em;
 }
@@ -85,8 +69,14 @@
 }
 
 .gotrgf_form_overview_container>.gotrgf_summary_title>h5 {
-    font-weight: 500;
+    /* Reset theme heading styles, so the title looks the same on every site */
+    margin: 0;
     padding: .3em;
+    font-size: 1.1em;
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: normal;
+    text-transform: none;
 }
 
 .gotrgf_form_overview_container>.gotrgf_summary_lines>.gotrgf_summary_line {
@@ -101,10 +91,13 @@
 
 .gotrgf_form_overview_container>.gotrgf_summary_lines>.gotrgf_summary_line>.gotrgf_line_part_left {
     min-width: 36%;
+    overflow-wrap: anywhere;
 }
 
 .gotrgf_form_overview_container>.gotrgf_summary_lines>.gotrgf_summary_line>.gotrgf_line_part_right {
     flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
     font-weight: 700;
     text-align: right;
 }
@@ -117,4 +110,23 @@
 
 .gotrgf_hide_preloader {
     display: none;
+}
+
+/* Shown only to form administrators when no fields are selected */
+
+.gotrgf_admin_notice {
+    font-size: 0.85em;
+    padding: .5em;
+    border-left: 4px solid #dba617;
+    background-color: #fcf9e8;
+    color: #1d2327;
+}
+
+.gotrgf_admin_notice p {
+    margin: 0 0 .5em;
+}
+
+.gotrgf_admin_notice .gotrgf_admin_notice__small {
+    margin-bottom: 0;
+    opacity: .7;
 }
